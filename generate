@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Cleanup
+rm -rf priv server client
+mkdir priv server client
+
+# Generate passwords for ca, server, and client
+openssl rand 64 | base64 | tr -d '/+=' | head -c 16 > ./priv/ca.pass
+openssl rand 64 | base64 | tr -d '/+=' | head -c 16 > ./server/server.pass
+openssl rand 64 | base64 | tr -d '/+=' | head -c 16 > ./client/client.pass
+
+# Paranoid level > 10000, check password lengths
+if [ "x$(wc -c < ./priv/ca.pass)" != "x16" ]; then 
+    echo "PASSWORD GENERATED WAS WRONG LENGHT! SOMETHING IS VERY WRONG."
+    exit 1
+fi
+if [ "x$(wc -c < ./server/server.pass)" != "x16" ]; then 
+    echo "PASSWORD GENERATED WAS WRONG LENGHT! SOMETHING IS VERY WRONG."
+    exit 1
+fi
+if [ "x$(wc -c < ./client/client.pass)" != "x16" ]; then 
+    echo "PASSWORD GENERATED WAS WRONG LENGHT! SOMETHING IS VERY WRONG."
+    exit 1
+fi
+
+# Generate the CA
+openssl req -batch -passout file:priv/ca.pass -x509 -config cnf/openssl-ca.cnf -newkey rsa:4096 -sha256 -out priv/cacert.pem -outform PEM 
+
+# Generate the Server CSR
+openssl req -batch -passout file:server/server.pass -config cnf/openssl-server.cnf -newkey rsa:4096 -sha256 -out ./server/servercert.csr -outform PEM 
+
+# Generate the Client CSR
+openssl req -batch -passout file:client/client.pass -config cnf/openssl-client.cnf -newkey rsa:4096 -sha256 -out ./client/clientcert.csr -outform PEM 
+
+# Sign the certificates
+touch priv/index.txt 
+echo 01 > priv/serial.txt
+yes | openssl ca -passin file:priv/ca.pass -config cnf/openssl-ca.cnf -policy signing_policy -extensions signing_req -out ./server/servercert.pem -infiles ./server/servercert.csr
+yes | openssl ca -passin file:priv/ca.pass -config cnf/openssl-ca.cnf -policy signing_policy -extensions signing_req -out ./client/clientcert.pem -infiles ./client/clientcert.csr
+rm -f *.pem
