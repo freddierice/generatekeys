@@ -38,3 +38,12 @@ echo 01 > priv/serial.txt
 yes | openssl ca -passin file:priv/ca.pass -config cnf/openssl-ca.cnf -policy signing_policy -extensions signing_req -out ./server/servercert.pem -infiles ./server/servercert.csr
 yes | openssl ca -passin file:priv/ca.pass -config cnf/openssl-ca.cnf -policy signing_policy -extensions signing_req -out ./client/clientcert.pem -infiles ./client/clientcert.csr
 rm -f *.pem
+
+# Put them away 
+mkdir out 
+mv server/server.pass client/client.pass ./out
+mv server/servercert.pem client/clientcert.pem ./out
+mv priv/cacert.pem ./out
+
+# Cleanup
+rm -rf priv server client
