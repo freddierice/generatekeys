@@ -54,7 +54,7 @@ organizationalUnitName  = Organizational Unit (eg, division)
 organizationalUnitName_default  = SomeOrganizationUnit
 
 commonName          = Common Name (e.g. server FQDN or YOUR name)
-commonName_default      = SomeCommonName
+commonName_default      = CANAME
 
 emailAddress            = Email Address
 emailAddress_default        = some@localhost

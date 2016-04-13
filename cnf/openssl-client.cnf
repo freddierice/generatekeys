@@ -24,7 +24,7 @@ organizationName            = Organization Name (eg, company)
 organizationName_default    = SomeOrganization
 
 commonName          = Common Name (e.g. server FQDN or YOUR name)
-commonName_default      = localhost
+commonName_default      = client
 
 emailAddress            = Email Address
 emailAddress_default        = some@localhost
@@ -40,4 +40,4 @@ nsComment           = "Generated Certificate"
 
 [ alternate_names ]
 
-DNS.1 = localhost
+DNS.1 = client
