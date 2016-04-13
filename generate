@@ -43,6 +43,7 @@ rm -f *.pem
 mkdir out 
 mv server/server.pass client/client.pass ./out
 mv server/servercert.pem client/clientcert.pem ./out
+mv server/serverkey.pem client/clientkey.pem ./out
 mv priv/cacert.pem ./out
 
 # Cleanup
